@@ -3,20 +3,20 @@ jobs:
   build:
     docker:
       - image:  liuchong/rustup:nightly
-  steps:
-    - checkout
-    - name: Install dependencies
-      command: apt-get update -qq && apt-get install -y openssl opus-tools libsodium-dev ffmpeg youtube-dl
-    - restore_cache:
-        keys:
-          - cargo-cache-{{ checksum "Cargo.lock" }}
-          - cargo-cache
-    - name: Build binary
-      command: cargo build --release
-    - save_cache:
-      key: cargo-cache-{{ checksum "Cargo.lock" }}
-      paths:
-        - target/
-    - store_artifacts:
-          path: target/release/bin/discopotty
-          destination: discopotty
+    steps:
+      - checkout
+      - name: Install dependencies
+        command: apt-get update -qq && apt-get install -y openssl opus-tools libsodium-dev ffmpeg youtube-dl
+      - restore_cache:
+          keys:
+            - cargo-cache-{{ checksum "Cargo.lock" }}
+            - cargo-cache
+      - name: Build binary
+        command: cargo build --release
+      - save_cache:
+        key: cargo-cache-{{ checksum "Cargo.lock" }}
+        paths:
+          - target/
+      - store_artifacts:
+            path: target/release/bin/discopotty
+            destination: discopotty
