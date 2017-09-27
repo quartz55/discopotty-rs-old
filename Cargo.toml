@@ -1,0 +1,18 @@
+[package]
+authors = ["quartz55 <john.razor97@gmail.com>"]
+name = "discopotty"
+version = "0.1.0"
+
+[dependencies]
+lazy_static = "*"
+serde = "*"
+serde_derive = "*"
+serde_json = "*"
+serde_yaml = "*"
+slog = "*"
+sloggers = "*"
+error-chain = "*"
+
+[dependencies.serenity]
+features = ["cache", "voice"]
+git = "https://github.com/zeyla/serenity.git"
