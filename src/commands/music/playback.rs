@@ -27,6 +27,8 @@ pub fn play(ctx: &mut Context, msg: &Message, args: Args) -> Result<(), CommandE
                 send_msg!(msg.channel_id => "Playing: {}", &track.title);
             };
         }
+    } else {
+        send_msg!(msg.channel_id => "ERROR: Bot must join a channel first. See '!help join' for more information.");
     }
     Ok(())
 }

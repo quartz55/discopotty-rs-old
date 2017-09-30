@@ -22,5 +22,5 @@ jobs:
           paths:
             - target/
       - store_artifacts:
-          path: target/release/bin/discopotty
+          path: target/release/discopotty
           destination: discopotty
