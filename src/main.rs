@@ -30,11 +30,9 @@ mod utils;
 mod music;
 mod commands;
 
-//use music::MusicState;
-
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 struct BotConfig {
-    token: String
+    token: String,
 }
 
 struct Handler;
@@ -49,30 +47,34 @@ fn main() {
     let mut client = Client::new(&config.token, Handler);
 
     client.with_framework(StandardFramework::new()
-        .configure(|c| c
-            .prefix("!")
-            .on_mention(true)
-            .allow_dm(false))
-        .command("help", |c| c
-            .desc("Shows usage for all available commands\n\
-            Call 'help <command>' to get usage for specific command")
-            .exec_help(help_commands::with_embeds))
-        .command("ping", |c| c
-            .desc("Responds with 'pong'")
-            .exec(commands::utils::ping))
-        .command("play", |c| c
-            .known_as("pl")
-            .desc("Pauses/Resumes playback if called without any arguments\n\
-            Plays specified link or query immediately if supplied")
-            .exec(commands::music::playback::play))
-        .command("join", |c| c
-            .desc("Makes bot join the voice channel of caller \
-            or argument if provided")
-            .exec(commands::voice::join))
-        .command("leave", |c| c
-            .desc("Makes bot leave the voice channel he's currently on")
-            .exec(commands::voice::leave))
-    );
+        .configure(|c| {
+            c.prefix("!")
+                .on_mention(true)
+                .allow_dm(false)
+        })
+        .command("help", |c| {
+            c.desc("Shows usage for all available commands\nCall 'help <command>' to get usage \
+                       for specific command")
+                .exec_help(help_commands::with_embeds)
+        })
+        .command("ping", |c| {
+            c.desc("Responds with 'pong'")
+                .exec(commands::utils::ping)
+        })
+        .command("play", |c| {
+            c.known_as("pl")
+                .desc("Pauses/Resumes playback if called without any arguments\nPlays specified \
+                       link or query immediately if supplied")
+                .exec(commands::music::playback::play)
+        })
+        .command("join", |c| {
+            c.desc("Makes bot join the voice channel of caller or argument if provided")
+                .exec(commands::voice::join)
+        })
+        .command("leave", |c| {
+            c.desc("Makes bot leave the voice channel he's currently on")
+                .exec(commands::voice::leave)
+        }));
 
     info!(logger::LOGGER, "Starting bot...");
     if let Err(why) = client.start() {
@@ -88,7 +90,9 @@ fn read_config(path: &str) -> BotConfig {
         Err(_) => {
             let mut file_path = env::current_dir().unwrap();
             file_path.push(path);
-            error!(logger::LOGGER, "Configuration file not found in '{}'", file_path.display());
+            error!(logger::LOGGER,
+                   "Configuration file not found in '{}'",
+                   file_path.display());
             std::process::exit(1)
         }
     };
@@ -97,6 +101,5 @@ fn read_config(path: &str) -> BotConfig {
     config_file.read_to_string(&mut config)
         .expect("Couldn't read configuration file");
 
-    serde_yaml::from_str(&config)
-        .expect("Invalid configuration file")
+    serde_yaml::from_str(&config).expect("Invalid configuration file")
 }

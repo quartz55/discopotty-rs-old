@@ -1,6 +1,6 @@
 use slog::Logger;
 use sloggers::Build;
-use sloggers::terminal::{TerminalLoggerBuilder};
+use sloggers::terminal::TerminalLoggerBuilder;
 use sloggers::types::{Severity, Format};
 
 lazy_static! {

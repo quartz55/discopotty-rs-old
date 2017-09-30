@@ -10,30 +10,26 @@ error_chain! {
     }
 }
 
-const BASE_ARGS: &'static [&'static str] = &[
-    "--default-search", "ytsearch",
-    "-f", "webm[abr>0]/bestaudio/best",
-    "-i",
-    "-j"
-];
+const BASE_ARGS: &'static [&'static str] =
+    &["--default-search", "ytsearch", "-f", "webm[abr>0]/bestaudio/best", "-i", "-j"];
 
 #[derive(Deserialize, Debug)]
 pub struct YtdlTrackInfo {
     pub id: String,
     pub url: String,
     pub title: String,
-    pub duration: u64
+    pub duration: u64,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct YtdlFlatInfo {
-    pub id: String
+    pub id: String,
 }
 
 #[derive(Debug)]
 pub enum YtdlResult {
     Track(YtdlTrackInfo),
-    PlaylistInfo(YtdlFlatInfo)
+    PlaylistInfo(YtdlFlatInfo),
 }
 
 pub fn parse_query_or_link(query_or_link: &str) -> Result<Vec<YtdlResult>> {
@@ -46,8 +42,7 @@ pub fn parse_query_or_link(query_or_link: &str) -> Result<Vec<YtdlResult>> {
         args.append(&mut vec![query_or_link]);
     }
 
-    let out = Command::new("youtube-dl")
-        .args(&args)
+    let out = Command::new("youtube-dl").args(&args)
         .stdin(Stdio::null())
         .output()?;
 
@@ -61,7 +56,8 @@ pub fn parse_query_or_link(query_or_link: &str) -> Result<Vec<YtdlResult>> {
             .map(|info| {
                 let flat_info: YtdlFlatInfo = serde_json::from_str(info).unwrap();
                 YtdlResult::PlaylistInfo(flat_info)
-            }).collect();
+            })
+            .collect();
         return Ok(res);
     }
 
@@ -81,18 +77,26 @@ mod tests {
         }
         assert_eq!(1, res.len());
         let song = res.first().unwrap();
-        assert!(match song { &YtdlResult::Track(_) => true, _ => false});
+        assert!(match song {
+            &YtdlResult::Track(_) => true,
+            _ => false,
+        });
     }
 
     #[test]
     fn parse_playlist() {
-        let res = parse_query_or_link("https://www.youtube.com/playlist?list=PLhuLtJnYa2y4SyMqeA9xqbgzg79H0WSaz").unwrap();
+        let res = parse_query_or_link("https://www.youtube.\
+                                       com/playlist?list=PLhuLtJnYa2y4SyMqeA9xqbgzg79H0WSaz")
+            .unwrap();
         for i in &res {
             println!("{:#?}", i);
         }
         assert!(res.len() > 1);
         let info = res.first().unwrap();
-        assert!(match info { &YtdlResult::PlaylistInfo(_) => true, _ => false});
+        assert!(match info {
+            &YtdlResult::PlaylistInfo(_) => true,
+            _ => false,
+        });
     }
 
     #[test]
@@ -103,6 +107,9 @@ mod tests {
         }
         assert_eq!(1, res.len());
         let song = res.first().unwrap();
-        assert!(match song { &YtdlResult::Track(_) => true, _ => false});
+        assert!(match song {
+            &YtdlResult::Track(_) => true,
+            _ => false,
+        });
     }
 }
