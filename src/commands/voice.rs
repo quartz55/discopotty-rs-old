@@ -1,13 +1,13 @@
 use serenity::utils::MessageBuilder;
 use serenity::model::{Message, Guild};
 use serenity::prelude::*;
-use serenity::framework::standard::Args;
+use serenity::framework::standard::{CommandError, Args};
 use std::sync::Arc;
 
 use logger;
 use utils;
 
-pub fn join(ctx: &mut Context, msg: &Message, args: Args) -> Result<(), String> {
+pub fn join(ctx: &mut Context, msg: &Message, args: Args) -> Result<(), CommandError> {
     if let Ok(guild) = utils::get_guild_cache(msg.channel_id) {
         let guild = guild.read().unwrap();
         match args.len() {
@@ -37,7 +37,7 @@ pub fn join(ctx: &mut Context, msg: &Message, args: Args) -> Result<(), String> 
     Ok(())
 }
 
-pub fn leave(ctx: &mut Context, msg: &Message, _args: Args) -> Result<(), String> {
+pub fn leave(ctx: &mut Context, msg: &Message, _args: Args) -> Result<(), CommandError> {
     let guild = Arc::clone(&msg.guild().unwrap());
     let guild: &Guild = &(*guild.read().unwrap());
     ctx.shard
