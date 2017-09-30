@@ -15,4 +15,4 @@ error-chain = "*"
 
 [dependencies.serenity]
 features = ["cache", "voice"]
-git = "https://github.com/zeyla/serenity.git"
+version = "*"
