@@ -1,0 +1,26 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image:  liuchong/rustup:nightly
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: apt-get update -qq && apt-get install -y openssl opus-tools libsodium-dev ffmpeg youtube-dl pkgconf
+      - restore_cache:
+          keys:
+            - cargo-cache-{{ checksum "Cargo.lock" }}
+            - cargo-cache
+      - run:
+          name: Build binary
+          command: cargo build --release
+          environment:
+            SODIUM_LIB_DIR: /usr/lib/x86_64-linux-gnu/libsodium.so
+      - save_cache:
+          key: cargo-cache-{{ checksum "Cargo.lock" }}
+          paths:
+            - target/
+      - store_artifacts:
+          path: target/release/discopotty
+          destination: discopotty
